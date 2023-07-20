@@ -3,23 +3,29 @@ import Reccomender as rec
 import pandas as pd
 from tkinter import *
 
-
-
 def Main():
+
+    #Data Initialisation
     dm.UpdateAverages()
     Sports = ['Road Cycling']
     User_ID = 1
-    ContentSports = []
 
-  
+    #Content Based reccomendation for sports
+    #Loops through multiple sport inputs from the user
+    ContentSports = []
     for Sport in Sports:
         SimpleContentBasedSport = rec.SimpleContentBasedSport(Sport)
         for sport2 in SimpleContentBasedSport:
             ContentSports.append(sport2)
 
+    #Content Based reccomendation for the specif user based on similar users
     SimpleContentBasedUser =rec.SimpleContentBasedUser(User_ID)
     UserSports =dm.GetUserSports(User_ID ,SimpleContentBasedUser)
+    
+    #Collaberative reccomendation based on user sport ratings
     ResultsDf = rec.CollaberativePartOne(User_ID)
+
+    #Outputs
     print('Sport Tested For', Sports)
     print('User Tested For', User_ID)
     print("Collaberative: " , (ResultsDf['Sport'][0]) , (ResultsDf['Sport'][1]) , (ResultsDf['Sport'][2]) )
