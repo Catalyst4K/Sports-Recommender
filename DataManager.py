@@ -9,6 +9,26 @@ Active = sqlite3.connect(DB_Name)
 c = Active.cursor()
 Active.commit()
 
+def UserLoginInitial():
+    sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS UserLogin (
+                                    USER_ID integer PRIMARY KEY,
+                                    Email text NOT NULL,
+                                    Password text NOT NULL
+                                    ); """
+    c.execute(sql_create_projects_table)
+
+def UserLoginCheck(Email, Password):
+    Is_Valid = False
+    sql_query = "SELECT USER_ID from UserLogin WHERE Email='"+Email+"' AND Password ='"+Password+"'"
+    c.execute(sql_query)
+    user = c.fetchone()
+    if user is not None:
+        Is_Valid = True
+        print('Welcome User' , user)
+    else:
+        print('Invalid Credentials Please Try Again')
+    return Is_Valid, user
+
 #Importing initial Data
 def SportsTableInitial():
     df = pd.read_csv('Data/Sports.csv')
@@ -133,13 +153,13 @@ def GetUserSports(User_ID, Users):
     ExcludeSports = []
     for ind in df.index:
         User_ID2 = (df['USER_ID'][ind])
-        SportID = (df['SportID'][ind])
+        SportID = (df['Sport_ID'][ind])
         if User_ID == User_ID2:
             ExcludeSports.append(SportID)
     for user in Users:
         for ind in df.index:
             User_ID = (df['USER_ID'][ind])
-            SportID = (df['SportID'][ind])
+            SportID = (df['Sport_ID'][ind])
             if User_ID == user and SportID not in ExcludeSports and SportID not in SportIDs:
                 SportIDs.append(SportID)
     return SportIDs

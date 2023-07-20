@@ -4,11 +4,18 @@ import pandas as pd
 from tkinter import *
 
 def Main():
+    ValidLogin = False
+    #Login
+    while not ValidLogin:
+        print("Please Enter Email")
+        Email = input()
+        print("please Enter Password")
+        Password = input()
+        ValidLogin, User_ID = dm.UserLoginCheck(Email, Password)
 
     #Data Initialisation
     dm.UpdateAverages()
     Sports = ['Road Cycling']
-    User_ID = 1
 
     #Content Based reccomendation for sports
     #Loops through multiple sport inputs from the user
