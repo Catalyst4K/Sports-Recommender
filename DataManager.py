@@ -11,7 +11,7 @@ Active.commit()
 
 def UserLoginInitial():
     sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS UserLogin (
-                                    USER_ID integer PRIMARY KEY,
+                                    USER_ID integer PRIMARY KEY AUTOINCREMENT,
                                     Email text NOT NULL,
                                     Password text NOT NULL
                                     ); """
@@ -22,12 +22,30 @@ def UserLoginCheck(Email, Password):
     sql_query = "SELECT USER_ID from UserLogin WHERE Email='"+Email+"' AND Password ='"+Password+"'"
     c.execute(sql_query)
     user = c.fetchone()
+    user=str(user).strip("('',)'")
     if user is not None:
         Is_Valid = True
         print('Welcome User' , user)
     else:
         print('Invalid Credentials Please Try Again')
     return Is_Valid, user
+
+def AddUser(Email , Password):
+    Is_Valid = False
+    sql_query = "SELECT * from UserLogin WHERE Email='"+Email+"'"
+    c.execute(sql_query)
+    if not c.fetchone():
+        sql_query = "INSERT into UserLogin (Email , Password) VAlUES ('"+Email+"' , '"+Password+"')"
+        try:
+            c.execute(sql_query)
+            Active.commit()
+            Is_Valid = True
+        except sqlite3.Error as error:
+            print(error)
+            print("Invalid Credentials Try Again")
+    else:
+        print("User Allready Exists")
+    return Is_Valid
 
 #Importing initial Data
 def SportsTableInitial():
@@ -39,7 +57,7 @@ def MainDatainitial():
     UpdateMainData(df)
 
 #Function to add user to the data
-def AddUser(UserData):
+def AddUserInfo(UserData):
     df = RetriveUserData()
     df. append(UserData, ignore_index=True)
     UpdateUserTable(df)
@@ -56,7 +74,8 @@ def CreateUserSportTable(mdf, sdf):
     UpdateUserSport(usdf)
 
 #Initial Table Ceation from data gathering
-def CreateUserTable(df):
+def CreateUserTable():
+    df = RetriveMainData()
     udf = pd.DataFrame(columns = ['USER_ID' , 'Gender' , 'Age' , 'Postcode', 'Sport Type'])
     CurrentUserID = 0
     for ind in df.index:
@@ -178,7 +197,7 @@ def RetriveUserData():
                                SELECT * 
                                FROM Users
                                ''', Active)
-    df = pd.DataFrame(sql_query, columns = ['USER_ID', 'Gender', 'Age' ,'Sport Type'])
+    df = pd.DataFrame(sql_query, columns = ['USER_ID', 'Gender', 'Age' ,'Postcode', 'Sport Type'])
     return(df)
 
 def RetriveUserSportData():

@@ -5,13 +5,33 @@ from tkinter import *
 
 def Main():
     ValidLogin = False
+    ValidEntry = False
+    ExistingAccount = ''
     #Login
     while not ValidLogin:
-        print("Please Enter Email")
-        Email = input()
-        print("please Enter Password")
-        Password = input()
-        ValidLogin, User_ID = dm.UserLoginCheck(Email, Password)
+        while ExistingAccount.lower() != 'yes' and ExistingAccount.lower() != 'no':
+            ExistingAccount = input("Welcome, Do you have an exisitng account 'Yes' or 'No'")
+
+        if ExistingAccount == 'yes':
+            print('Welcome Back, Please enter your login credentials')
+            Email = input("Please Enter Email")
+            Password =input("please Enter Password")
+            ValidLogin, User_ID = dm.UserLoginCheck(Email, Password)
+        else:
+            while not ValidEntry:
+                print('Welcome, Please fill in the information boxes')
+                Email = input("Please Enter Email")
+                Password =input("please Enter Password")
+                ValidEntry = dm.AddUser(Email, Password)
+            ValidLogin, User_ID = dm.UserLoginCheck(Email, Password)
+            Gender = input("Please enter your gender")
+            Age = input("Please enter your Age")
+            Postcode = input("Please enter the first half of your Postcode without numbers")  
+            Sport_Type = input("Please enter 'Team Sports' or 'Individual Sports' ")            
+            DataToEnter = {'USER_ID': int(User_ID) , 'Gender': str(Gender),'Age': int(Age), 'Postcode': str(Postcode), 'Sport Type': str(Sport_Type)}
+            dm.AddUserInfo(DataToEnter)
+
+
 
     #Data Initialisation
     dm.UpdateAverages()
@@ -26,11 +46,11 @@ def Main():
             ContentSports.append(sport2)
 
     #Content Based reccomendation for the specif user based on similar users
-    SimpleContentBasedUser =rec.SimpleContentBasedUser(User_ID)
-    UserSports =dm.GetUserSports(User_ID ,SimpleContentBasedUser)
+    SimpleContentBasedUser =rec.SimpleContentBasedUser(int(User_ID))
+    UserSports =dm.GetUserSports(int(User_ID) ,SimpleContentBasedUser)
     
     #Collaberative reccomendation based on user sport ratings
-    ResultsDf = rec.CollaberativePartOne(User_ID)
+    ResultsDf = rec.CollaberativePartOne(int(User_ID))
 
     #Outputs
     print('Sport Tested For', Sports)

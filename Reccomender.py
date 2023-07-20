@@ -25,7 +25,7 @@ def PrepareDataSport(df):
 def PrepareDataUser(df):
     df['Sport Type'] = le.fit_transform(df['Sport Type'])
     df['Gender'] = le.fit_transform(df['Gender'])
-    #df['Postcode'] = le.fit_transform(df['Postcode'])
+    df['Postcode'] = le.fit_transform(df['Postcode'])
     df = df.dropna(how= 'any')
     df = df.reset_index(drop = True)
     return df
