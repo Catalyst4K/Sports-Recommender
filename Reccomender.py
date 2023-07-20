@@ -11,9 +11,9 @@ from surprise import Reader
 from surprise import SVD
 from surprise import KNNWithMeans
 from surprise.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score
 le = LabelEncoder()
 
+#Convert non numeric values to numeric and drop empty cells
 def PrepareDataSport(df):
     df['Category'] = le.fit_transform(df['Category'])
     df['Type'] = le.fit_transform(df['Type'])
@@ -21,6 +21,7 @@ def PrepareDataSport(df):
     df = df.reset_index(drop = True)
     return df
 
+#Convert non numeric values to numeric and drop empty cells
 def PrepareDataUser(df):
     df['Sport Type'] = le.fit_transform(df['Sport Type'])
     df['Gender'] = le.fit_transform(df['Gender'])
@@ -29,13 +30,15 @@ def PrepareDataUser(df):
     df = df.reset_index(drop = True)
     return df
 
+#Convert non numeric values to numeric and drop empty cells
 def PrepareDataRating(df):
     df['Sport'] = le.fit_transform(df['Sport'])
     df = df.dropna(how= 'any')
     df = df.reset_index(drop = True)
     return df
 
-
+#Content Based for Sport
+#Using cosine similarity comparing sport table attiributes
 def SimpleContentBasedSport(Sport):
     SimpleReccomend = []
     df = dm.RetriveSportData()
@@ -49,6 +52,8 @@ def SimpleContentBasedSport(Sport):
             SimpleReccomend.append(df['Sport'][i])
     return SimpleReccomend
 
+#Content Based for user
+#Using cosine similarity comparing user table attiributes
 def SimpleContentBasedUser(User):
     SimpleReccomend = []
     df = dm.RetriveUserData()
@@ -63,8 +68,9 @@ def SimpleContentBasedUser(User):
             SimpleReccomend.append(df['USER_ID'][i])
     return SimpleReccomend
 
+#Collabertive reccomender using KNN 
+#Multiple Debugging and optimisation checks commented out
 def CollaberativePartOne(User_ID):
-    dm.createRatingsTableAlt()
     rdf = dm.RetriveRatingData()
     sdf = dm.RetriveSportData()
     usdf = dm.RetriveUserSportData()
