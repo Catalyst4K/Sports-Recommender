@@ -4,6 +4,7 @@ import pandas as pd
 from tkinter import *
 
 def Main():
+    dm.UserLoginInitial()
     ValidLogin = False
     ValidEntry = False
     ExistingAccount = ''
@@ -37,7 +38,7 @@ def Main():
 
     #Data Initialisation
     dm.UpdateAverages()
-    Sports = dm.GetUserSports(0 , SimpleContentBasedUser)
+    Sports = dm.GetUserSports(0 , User_ID)
 
     #Content Based reccomendation for sports
     #Loops through muliple sport inputs from the user

@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 from sqlalchemy import true
 from sklearn.preprocessing import LabelEncoder
+import bcrypt
 
 DB_Name = 'Data/SportReccomend_Database'
 
@@ -16,26 +17,46 @@ def UserLoginInitial():
                                     Password text NOT NULL
                                     ); """
     c.execute(sql_create_projects_table)
+    Active.commit()
+
+def EncryptPword(Password):
+    Salt = bcrypt.gensalt()
+    bytePwd = Password.encode('utf-8')
+    EncryptedPword = (bcrypt.hashpw(bytePwd , Salt)).decode('utf-8')
+    return EncryptedPword
 
 def UserLoginCheck(Email, Password):
     Is_Valid = False
-    sql_query = "SELECT USER_ID from UserLogin WHERE Email='"+Email+"' AND Password ='"+Password+"'"
+    sql_query = "SELECT Password from UserLogin WHERE Email='"+Email+"'"
     c.execute(sql_query)
-    user = c.fetchone()
-    user=str(user).strip("('',)'")
-    if user is not None:
-        Is_Valid = True
-        print('Welcome User' , user)
+    StoredPassword = c.fetchone()
+    StoredPassword=str(StoredPassword).strip("('',)'")
+    StoredPassword = StoredPassword.encode('utf-8')
+    Password = Password.encode('utf-8')
+    if StoredPassword is not None:
+        ValidPass = bcrypt.checkpw(Password , StoredPassword)
+        if ValidPass:
+            Is_Valid = True
+            sql_query = "SELECT USER_ID from UserLogin WHERE Email='"+Email+"'"
+            c.execute(sql_query)
+            user = c.fetchone()
+            user=str(user).strip("('',)'")
+            print('Welcome User' , user)
+        else:
+            print('Invalid Credentials Please Try Again')
+            user = 0
     else:
         print('Invalid Credentials Please Try Again')
+        user = 0
     return Is_Valid, user
 
 def AddUser(Email , Password):
     Is_Valid = False
+    Password = EncryptPword(Password)
     sql_query = "SELECT * from UserLogin WHERE Email='"+Email+"'"
     c.execute(sql_query)
     if not c.fetchone():
-        sql_query = "INSERT into UserLogin (Email , Password) VAlUES ('"+Email+"' , '"+Password+"')"
+        sql_query = "INSERT into UserLogin (Email , Password) VAlUES ('"+Email+"' , '"+Password+"' )"
         try:
             c.execute(sql_query)
             Active.commit()
@@ -166,20 +187,20 @@ def UpdateAverages():
     UpdateSportsData(sdf)
 
 #Retrive the sports of specific users
-def GetUserSports(User_ID, Users):
+def GetUserSports(UserToTest, Users):
     df = RetriveUserSportData()
     SportIDs = []
     ExcludeSports = []
     for ind in df.index:
         User_ID2 = (df['USER_ID'][ind])
         SportID = (df['Sport_ID'][ind])
-        if User_ID == User_ID2:
+        if UserToTest == User_ID2:
             ExcludeSports.append(SportID)
     for user in Users:
         for ind in df.index:
             User_ID = (df['USER_ID'][ind])
             SportID = (df['Sport_ID'][ind])
-            if User_ID == user and SportID not in ExcludeSports and SportID not in SportIDs:
+            if int(User_ID) == int(user) and SportID not in ExcludeSports and SportID not in SportIDs:
                 SportIDs.append(SportID)
     SportsList = GetSportFromID(SportIDs)
     return SportsList
