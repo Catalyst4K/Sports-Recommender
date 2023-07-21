@@ -91,8 +91,7 @@ def CreateUserSportTable(mdf, sdf):
     UpdateUserSport(usdf)
 
 #Initial Table Ceation from data gathering
-def CreateUserTable():
-    df = RetriveMainData()
+def CreateUserTable(df):
     udf = pd.DataFrame(columns = ['USER_ID' , 'Gender' , 'Age' , 'Postcode', 'Sport Type'])
     CurrentUserID = 0
     for ind in df.index:
