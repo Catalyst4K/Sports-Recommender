@@ -31,32 +31,31 @@ def Main():
             DataToEnter = {'USER_ID': int(User_ID) , 'Gender': str(Gender),'Age': int(Age), 'Postcode': str(Postcode), 'Sport Type': str(Sport_Type)}
             dm.AddUserInfo(DataToEnter)
 
-
+    #Content Based reccomendation for the specif user based on similar users
+    SimpleContentBasedUser =rec.SimpleContentBasedUser(int(User_ID))
+    UserSports =dm.GetUserSports(int(User_ID) ,SimpleContentBasedUser)
 
     #Data Initialisation
     dm.UpdateAverages()
-    Sports = ['Road Cycling']
+    Sports = dm.GetUserSports(0 , SimpleContentBasedUser)
 
     #Content Based reccomendation for sports
-    #Loops through multiple sport inputs from the user
+    #Loops through muliple sport inputs from the user
     ContentSports = []
     for Sport in Sports:
         SimpleContentBasedSport = rec.SimpleContentBasedSport(Sport)
         for sport2 in SimpleContentBasedSport:
             ContentSports.append(sport2)
-
-    #Content Based reccomendation for the specif user based on similar users
-    SimpleContentBasedUser =rec.SimpleContentBasedUser(int(User_ID))
-    UserSports =dm.GetUserSports(int(User_ID) ,SimpleContentBasedUser)
     
     #Collaberative reccomendation based on user sport ratings
-    ResultsDf = rec.CollaberativePartOne(int(User_ID))
+    CollResults = rec.CollaberativePartOne(int(User_ID))
+    CollSports = dm.GetSportFromID(CollResults)
 
     #Outputs
     print('Sport Tested For', Sports)
     print('User Tested For', User_ID)
-    print("Collaberative: " , (ResultsDf['Sport'][0]) , (ResultsDf['Sport'][1]) , (ResultsDf['Sport'][2]) )
-    print("User Content-Based: " , UserSports , SimpleContentBasedUser)
+    print("Collaberative: " , CollSports)
+    print("User Content-Based: " , UserSports)
     print("Sport Content-Based: " , ContentSports)
 
 Main()
