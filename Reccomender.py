@@ -86,20 +86,14 @@ def CollaberativePartOne(User_ID):
     algo = KNNWithMeans(sim_options=sim_options)
     trainingSet = data.build_full_trainset()
     algo.fit(trainingSet)
-    ResultsDF = pd.DataFrame(columns = ['Sport' , 'Rating'])
+    ResultsDF = pd.DataFrame(columns = ['Sport_ID' , 'Rating'])
     UserSports = usdf.loc[usdf['USER_ID'] == User_ID]
     SportIDList = UserSports.Sport_ID.values.tolist()
-    SportList = []
-    for S in sdf.index:
-        SID = (sdf['Sport_ID'][S])
-        for SportID in SportIDList:
-            if SID == SportID:
-                SportList.append((sdf['Sport'][S]))
     for ind in sdf.index:
-        Sport = (sdf['Sport'][ind])
-        prediction = algo.predict( User_ID , Sport )
-        if Sport not in SportList:
-            DataToEnter =  {'Sport':Sport , 'Rating':prediction.est }                        
+        SportID = (sdf['Sport_ID'][ind])
+        prediction = algo.predict( User_ID , SportID )
+        if SportID not in SportIDList:
+            DataToEnter =  {'Sport_ID': int(SportID) , 'Rating':prediction.est }                        
             ResultsDF = ResultsDF.append(DataToEnter, ignore_index=True)
 
 
@@ -133,7 +127,11 @@ def CollaberativePartOne(User_ID):
     #print(gs.best_params["rmse"])
    
     SortedDf = ResultsDF.sort_values(by=['Rating'], ascending=False, ignore_index=True )
-    return SortedDf
+    SportResults =[]
+    for i in range(0 , 3):
+        SportResults.append((SortedDf['Sport_ID'][i]))
+
+    return SportResults
     
 
     

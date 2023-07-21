@@ -181,7 +181,16 @@ def GetUserSports(User_ID, Users):
             SportID = (df['Sport_ID'][ind])
             if User_ID == user and SportID not in ExcludeSports and SportID not in SportIDs:
                 SportIDs.append(SportID)
-    return SportIDs
+    SportsList = GetSportFromID(SportIDs)
+    return SportsList
+
+#Get the sport name from the sport ID
+def GetSportFromID(SportIdList):
+    sdf = RetriveSportData()
+    SportList = []
+    for ID in SportIdList:
+        SportList.append(sdf.loc[sdf['Sport_ID'] == ID , 'Sport'].iloc[0])
+    return SportList
 
 #Functions to extract tables from SQL Database
 def RetriveSportData():
