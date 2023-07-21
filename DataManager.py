@@ -73,10 +73,6 @@ def SportsTableInitial():
     df = pd.read_csv('Data/Sports.csv')
     UpdateSportsData(df)
 
-def MainDatainitial():
-    df = pd.read_csv('Data/Data.csv')
-    UpdateMainData(df)
-
 #Function to add user to the data
 def AddUserInfo(UserData):
     df = RetriveUserData()
@@ -246,14 +242,6 @@ def RetriveRatingData():
     df = pd.DataFrame(sql_query, columns = ['USER_ID', 'Sport', 'Rating'])
     return(df)
 
-def RetriveMainData():
-    sql_query = pd.read_sql_query ('''
-                               SELECT * 
-                               FROM Main
-                               ''', Active)
-    df = pd.DataFrame(sql_query, columns = ['USER_ID', 'Gender', 'Age', 'Postcode', 'Sport', 'Sport Type'])
-    return(df)
-
 #Functions to return table to SQL Database
 def UpdateUserSport(df):
     df.to_sql('UserSport', Active, if_exists='replace', index = True)
@@ -270,11 +258,6 @@ def UpdateUserTable(df):
 def UpdateRatingsTable(df):
     df.to_sql('Ratings', Active, if_exists='replace', index = False)
     Active.commit()
-
-def UpdateMainData(df):
-    df.to_sql('Main', Active, if_exists='replace', index = False)
-    Active.commit()
-
 
 
         
