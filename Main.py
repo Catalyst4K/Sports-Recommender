@@ -4,10 +4,10 @@ import pandas as pd
 from tkinter import *
 
 def Main():
-    dm.UserLoginInitial()
     ValidLogin = False
     ValidEntry = False
     ExistingAccount = ''
+    
     #Login
     while not ValidLogin:
         while ExistingAccount.lower() != 'yes' and ExistingAccount.lower() != 'no':
