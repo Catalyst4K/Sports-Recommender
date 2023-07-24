@@ -65,7 +65,25 @@ def Main():
             print("User Content-Based: " , UserSports)
             print("Sport Content-Based: " , ContentSports)
         elif MenuChoice == '2':
-            print("Please Enter Sports")
+            print("Please choose sports from the list below")
+            df = dm.RetriveSportData()
+            for ind in df.index:
+                print((df['Sport_ID'][ind]),". " , (df['Sport'][ind]))
+            UserSportsEntry = []
+            SportEntry = -1
+            while SportEntry != 0:
+                try:
+                    SportEntry = int(input('Please enter a number each time, when you have entered all sports please enter 0'))
+                    if int(SportEntry) > 0 and int(SportEntry) < 39 and SportEntry not in UserSportsEntry:
+                        UserSportsEntry.append(SportEntry)
+                    elif int(SportEntry) != 0:
+                        print("Please enter a valid or non repeated value")
+                except:
+                    print("Please enter a valid value")
+            if UserSportsEntry is not None:
+                dm.AddSports(UserSportsEntry , User_ID)
+        
+
         elif MenuChoice == '3':
             print('Goodbye, have a good day')
             User_ID = 0
