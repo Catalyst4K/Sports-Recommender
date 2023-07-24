@@ -200,6 +200,14 @@ def GetUserSports(UserToTest, Users):
     SportsList = GetSportFromID(SportIDs)
     return SportsList
 
+def AddSports(SportIDList , User_ID):
+    usdf = RetriveUserSportData()
+    for SportID in SportIDList:
+        DataToEnter = {'USER_ID': int(User_ID) , 'Sport_ID': int(SportID)}
+        usdf = usdf.append(DataToEnter, ignore_index=True)
+    UpdateUserSport(usdf)
+    
+
 #Get the sport name from the sport ID
 def GetSportFromID(SportIdList):
     sdf = RetriveSportData()
